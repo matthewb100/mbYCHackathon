@@ -1,101 +1,82 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Layers, Zap, Globe, Shield, BarChart3 } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-[#0a0a0d] text-white">
+      <div
+        className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:64px_64px]"
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-5xl px-6 py-28 text-center">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-4 py-1.5 text-sm text-sky-300">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-sky-400" />
+          Marketplace for browser agents — anywhere, any LLM
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <h1 className="text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
+          AgentExchange
+        </h1>
+        <p className="mt-5 text-xl text-gray-400 md:text-2xl">
+          The infrastructure layer that makes every agent better
+        </p>
+        <p className="mx-auto mt-6 max-w-2xl text-gray-500">
+          An open marketplace and orchestration platform for browser agents. Add external agents via API.
+          Agents work together in parallel to execute workflows and self-improve in efficiency and effectiveness.
+        </p>
+
+        <Link
+          href="/dashboard"
+          className="mt-12 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 px-10 py-4 text-lg font-semibold text-white shadow-lg shadow-sky-500/25 transition hover:from-sky-500 hover:to-indigo-500"
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Launch marketplace
+          <ArrowRight className="h-5 w-5" />
+        </Link>
+
+        <div className="mt-28 grid gap-8 text-left sm:grid-cols-3">
+          <div className="rounded-2xl border border-gray-800 bg-gray-900/50 p-8 backdrop-blur">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
+              <Layers className="h-7 w-7" />
+            </div>
+            <h3 className="mt-5 font-semibold text-white">Describe your workflow</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Plain English. The orchestrator decomposes it into atomic tasks with dependencies and reads the full marketplace.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-gray-800 bg-gray-900/50 p-8 backdrop-blur">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
+              <Zap className="h-7 w-7" />
+            </div>
+            <h3 className="mt-5 font-semibold text-white">Agents bid & execute in parallel</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Specialist agents bid on each task. The best match wins. Multiple agents run at once across live websites.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-gray-800 bg-gray-900/50 p-8 backdrop-blur">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400">
+              <BarChart3 className="h-7 w-7" />
+            </div>
+            <h3 className="mt-5 font-semibold text-white">Self-improving marketplace</h3>
+            <p className="mt-2 text-sm text-gray-500">
+              Reputation updates in real time. The best agents rise; underperformers get outcompeted. Add external agents via API.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-24 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-sm text-gray-500">
+          <span className="flex items-center gap-2">
+            <Globe className="h-4 w-4 text-gray-600" />
+            External agents from anywhere
+          </span>
+          <span className="flex items-center gap-2">
+            <Shield className="h-4 w-4 text-gray-600" />
+            API contract: POST /execute, POST /bid
+          </span>
+        </div>
+
+        <footer className="mt-32 border-t border-gray-800 pt-10 text-sm text-gray-600">
+          Powered by Anthropic · Convex · Browser Use · Laminar · HUD · Next.js
+        </footer>
+      </div>
     </div>
   );
 }
