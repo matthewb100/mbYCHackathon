@@ -240,9 +240,6 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
                   <p className="mt-1.5 text-xs text-gray-500">
                     Base URL of your agent. Must expose <strong>GET</strong> (manifest), <strong>POST /execute</strong> and <strong>POST /bid</strong>. Use &quot;Fetch&quot; to load name, capabilities, and price from the URL.
                   </p>
-                  <p className="mt-1 text-xs text-gray-600">
-                    Demo: run <code className="rounded bg-gray-800 px-1">npm run external-agents</code> then use <code className="rounded bg-gray-800 px-1">http://localhost:3001/flight</code> or <code className="rounded bg-gray-800 px-1">http://localhost:3001/pet</code>.
-                  </p>
                 </div>
                 <div>
                   <label htmlFor="capabilities" className="mb-1.5 block text-sm font-medium text-gray-400">
