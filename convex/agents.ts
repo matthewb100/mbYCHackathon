@@ -24,6 +24,8 @@ export const registerAgent = mutation({
       pricePerTask: pricePerTask ?? 0.1,
       isExternal: isExternal ?? false,
       apiEndpoint: apiEndpoint ?? undefined,
+      tasksCompleted: 0,
+      earnings: 0,
     });
   },
 });
@@ -144,6 +146,8 @@ export const seedAgentsMutation = mutation({
         pricePerTask: a.pricePerTask ?? 0.1,
         isExternal: a.isExternal ?? false,
         apiEndpoint: a.apiEndpoint ?? undefined,
+        tasksCompleted: 0,
+        earnings: 0,
       });
       ids.push(id);
     }

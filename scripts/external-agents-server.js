@@ -1,5 +1,5 @@
 /**
- * Mock external agent server — two dummy agents for the AgentExchange marketplace.
+ * Mock external agent server — two dummy agents for the Swarm marketplace.
  * Run: node scripts/external-agents-server.js
  * Then register in the UI:
  *   - http://localhost:3001/flight  (FlightDeals — travel booking)

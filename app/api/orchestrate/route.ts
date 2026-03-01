@@ -203,7 +203,11 @@ export async function POST(request: Request) {
 
     const taskAssignments = plan.tasks
       .filter((t) => t.assignedAgentId)
-      .map((t) => ({ logicalId: t.id, assignedAgentId: t.assignedAgentId as Id<"agents"> }));
+      .map((t) => ({
+        logicalId: t.id,
+        assignedAgentId: t.assignedAgentId as Id<"agents">,
+        assignedPrice: t.bidPrice,
+      }));
 
     await fetchMutation(
       api.workflows.setExecutionPlan,

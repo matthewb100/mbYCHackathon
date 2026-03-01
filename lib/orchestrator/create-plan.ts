@@ -34,7 +34,7 @@ export interface TaskProfile {
   requiredCapabilities: string[];
 }
 
-const SYSTEM_PROMPT = `You are the AgentExchange orchestrator. Given a user's workflow request, the available agents in the marketplace, and the bids submitted, create the optimal execution plan.
+const SYSTEM_PROMPT = `You are the Swarm orchestrator. Given a user's workflow request, the available agents in the marketplace, and the bids submitted, create the optimal execution plan.
 
 Consider (in order of weight):
 - Agent reputation scores (40%) — higher = more reliable

@@ -49,6 +49,9 @@ export const updateTaskStatus = mutation({
     ),
   },
   handler: async (ctx, { taskId, status, assignedAgentId, result }) => {
+    const task = await ctx.db.get(taskId);
+    if (!task) return;
+    const wasCompleted = task.status === "completed";
     const patch: {
       status: string;
       assignedAgentId?: typeof assignedAgentId;
@@ -57,6 +60,18 @@ export const updateTaskStatus = mutation({
     if (assignedAgentId !== undefined) patch.assignedAgentId = assignedAgentId;
     if (result !== undefined) patch.result = result;
     await ctx.db.patch(taskId, patch);
+    // Credit agent earnings when task first transitions to completed
+    if (!wasCompleted && status === "completed" && task.assignedAgentId) {
+      const price = task.assignedPrice ?? 0;
+      if (price > 0) {
+        const agent = await ctx.db.get(task.assignedAgentId);
+        if (agent) {
+          const tasksCompleted = (agent.tasksCompleted ?? 0) + 1;
+          const earnings = (agent.earnings ?? 0) + price;
+          await ctx.db.patch(task.assignedAgentId, { tasksCompleted, earnings });
+        }
+      }
+    }
   },
 });
 

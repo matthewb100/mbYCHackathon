@@ -15,6 +15,8 @@ export function AgentPanel() {
     isOnline: boolean;
     pricePerTask?: number;
     isExternal?: boolean;
+    tasksCompleted?: number;
+    earnings?: number;
   }> | undefined;
 
   if (!agents?.length) {
@@ -62,6 +64,9 @@ export function AgentPanel() {
               <p className="font-medium text-white">{agent.name}</p>
               <p className="text-xs text-amber-400/90">
                 ${(agent.pricePerTask ?? 0.1).toFixed(2)}/task
+              </p>
+              <p className="text-xs text-emerald-400/90">
+                {(agent.tasksCompleted ?? 0)} tasks · ${(agent.earnings ?? 0).toFixed(2)} earned
               </p>
               <div className="mt-1 flex flex-wrap gap-1">
                 {agent.capabilities.slice(0, 3).map((c) => (

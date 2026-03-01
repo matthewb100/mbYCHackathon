@@ -30,7 +30,7 @@ export class SandboxManager {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.apiKey}`,
         },
-        body: JSON.stringify({ agentId, metadata: { source: "agent-exchange" } }),
+        body: JSON.stringify({ agentId, metadata: { source: "swarm" } }),
       });
       if (!res.ok) throw new Error(`Daytona ${res.status}: ${await res.text()}`);
       const data = (await res.json()) as { id?: string; sessionId?: string };

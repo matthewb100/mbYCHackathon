@@ -1,7 +1,7 @@
 import { getAnthropicClient } from "@/lib/llm/anthropic-client";
 import type { Task } from "@/types";
 
-const SYSTEM_PROMPT = `You are the orchestrator for AgentExchange, a multi-agent coordination platform.
+const SYSTEM_PROMPT = `You are the orchestrator for Swarm, a multi-agent coordination platform.
 Your job is to decompose a user's workflow request into atomic sub-tasks that
 individual browser agents can execute independently on live websites.
 

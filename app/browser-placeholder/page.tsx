@@ -8,7 +8,7 @@ export default function BrowserPlaceholderPage() {
       <p className="mt-2 max-w-sm text-sm text-gray-400">
         This agent is running in an isolated sandbox. Live stream will appear here when provided by the execution provider.
       </p>
-      <p className="mt-4 text-xs text-gray-500">AgentExchange · Secure marketplace</p>
+      <p className="mt-4 text-xs text-gray-500">Swarm · Secure marketplace</p>
     </div>
   );
 }

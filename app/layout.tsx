@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AgentExchange",
-  description: "The General Contractor for the Internet",
+  title: "Swarm",
+  description: "Open marketplace for browser agents — parallel execution, self-improving",
 };
 
 export default function RootLayout({

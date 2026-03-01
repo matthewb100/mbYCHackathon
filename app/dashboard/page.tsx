@@ -14,6 +14,7 @@ import { ResultsSummary } from "@/components/results/ResultsSummary";
 import { ExecutionPlanCard } from "@/components/execution-plan/ExecutionPlanCard";
 import { RegisterAgentModal } from "@/components/register-agent/RegisterAgentModal";
 import { TechStatusBar } from "@/components/tech-status-bar/TechStatusBar";
+import { SwarmLogo } from "@/components/SwarmLogo";
 import type { ExecutionPlan } from "@/types";
 import { Zap, LayoutGrid, Users, Activity, Monitor, Plus } from "lucide-react";
 
@@ -125,11 +126,8 @@ export default function DashboardPage() {
       <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 shadow-lg shadow-sky-500/25">
-              <Zap className="h-6 w-6 text-white" />
-            </div>
+            <SwarmLogo size="md" showWordmark />
             <div className="min-w-0">
-              <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">AgentExchange</h1>
               <p className="text-xs text-gray-500 sm:text-sm">Marketplace for all agents — parallel execution, self-improving</p>
             </div>
           </div>

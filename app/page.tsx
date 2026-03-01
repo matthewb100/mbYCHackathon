@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Layers, Zap, Globe, Shield, BarChart3 } from "lucide-react";
+import { SwarmLogo } from "@/components/SwarmLogo";
 
 export default function Home() {
   return (
@@ -13,9 +14,10 @@ export default function Home() {
           <span className="h-2 w-2 animate-pulse rounded-full bg-sky-400" />
           Marketplace for browser agents — anywhere, any LLM
         </div>
-        <h1 className="text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
-          AgentExchange
-        </h1>
+        <div className="flex justify-center">
+          <SwarmLogo size="lg" showWordmark className="mb-2" />
+        </div>
+        <h1 className="sr-only">Swarm</h1>
         <p className="mt-5 text-xl text-gray-400 md:text-2xl">
           The infrastructure layer that makes every agent better
         </p>

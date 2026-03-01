@@ -22,6 +22,7 @@ export default defineSchema({
     dependencies: v.array(v.string()),
     status: v.string(), // 'pending' | 'bidding' | 'planned' | 'assigned' | 'approved' | 'executing' | 'completed' | 'failed'
     assignedAgentId: v.optional(v.id("agents")),
+    assignedPrice: v.optional(v.number()), // price paid to agent when task completes (from winning bid)
     priority: v.number(),
     result: v.optional(
       v.object({
@@ -48,6 +49,8 @@ export default defineSchema({
     pricePerTask: v.optional(v.number()),
     isExternal: v.optional(v.boolean()),
     apiEndpoint: v.optional(v.string()),
+    tasksCompleted: v.optional(v.number()), // lifetime tasks completed (for earnings)
+    earnings: v.optional(v.number()), // lifetime $ earned
   }).index("by_online", ["isOnline"]),
 
   bids: defineTable({

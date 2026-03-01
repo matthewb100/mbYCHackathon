@@ -1,4 +1,4 @@
-# AgentExchange — Implementation Plan (Full System Description)
+# Swarm — Implementation Plan (Full System Description)
 
 ## Current vs Target Flow
 

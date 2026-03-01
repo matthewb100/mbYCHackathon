@@ -35,7 +35,7 @@ export class AgentMemory {
       await fetch(`${this.baseUrl}/memory`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${this.apiKey}` },
-        body: JSON.stringify({ agentId, domain, steps, timestamp: Date.now(), source: "agent-exchange" }),
+        body: JSON.stringify({ agentId, domain, steps, timestamp: Date.now(), source: "swarm" }),
       });
     } catch {
       // non-blocking

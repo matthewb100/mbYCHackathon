@@ -1,10 +1,10 @@
-# AgentExchange — End-to-end test
+# Swarm — End-to-end test
 
 ## Prerequisites
 
 - Convex dev running: `npx convex dev` (and configured with `NEXT_PUBLIC_CONVEX_URL`)
 - Next.js dev: `npm run dev`
-- `.env` (or `agent-exchange/.env` symlink) with:
+- `.env` (or `swarm/.env` symlink) with:
   - `NEXT_PUBLIC_CONVEX_URL`
   - `ANTHROPIC_API_KEY` (for decomposition, plan, synthesis)
   - `BROWSER_USE_API_KEY` (optional; internal agents will still bid without it, but execution will need it for Browser Use)
@@ -47,7 +47,7 @@
 ## Quick verification
 
 ```bash
-# From agent-exchange/
+# From swarm/
 npm run build   # must pass
 npx convex dev  # in one terminal
 npm run dev     # in another; open http://localhost:3000/dashboard

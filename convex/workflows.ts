@@ -45,6 +45,7 @@ export const setExecutionPlan = mutation({
     taskAssignments: v.array(v.object({
       logicalId: v.string(),
       assignedAgentId: v.id("agents"),
+      assignedPrice: v.optional(v.number()),
     })),
   },
   handler: async (ctx, { workflowId, executionPlanJson, totalEstimatedCost, totalEstimatedTime, taskAssignments }) => {
@@ -61,7 +62,11 @@ export const setExecutionPlan = mutation({
     for (const ta of taskAssignments) {
       const task = tasks.find((t) => t.logicalId === ta.logicalId);
       if (task) {
-        await ctx.db.patch(task._id, { status: "assigned", assignedAgentId: ta.assignedAgentId });
+        await ctx.db.patch(task._id, {
+          status: "assigned",
+          assignedAgentId: ta.assignedAgentId,
+          ...(ta.assignedPrice !== undefined && ta.assignedPrice !== null ? { assignedPrice: ta.assignedPrice } : {}),
+        });
       }
     }
   },
