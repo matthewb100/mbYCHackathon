@@ -48,7 +48,39 @@ export default function DashboardPage() {
   const workflow = useQuery(
     api.workflows.getWorkflow,
     workflowId ? { workflowId } : "skip"
-  ) as { status: string; input: string; completedAt?: number; synthesizedResult?: string } | null | undefined;
+  ) as {
+    status: string;
+    input: string;
+    completedAt?: number;
+    synthesizedResult?: string;
+    totalEstimatedCost?: number;
+    totalEstimatedTime?: string;
+    laminarTraceId?: string | null;
+    workflowArchived?: boolean;
+    tasks?: Array<{
+      logicalId: string;
+      description: string;
+      status: string;
+      assignedAgentId?: Id<"agents">;
+      assignedPrice?: number;
+      result?: { success: boolean; data?: unknown; executionTimeMs?: number };
+    }>;
+  } | null | undefined;
+
+  const runningCost =
+    workflow?.tasks?.filter((t) => t.status === "completed").reduce((sum, t) => sum + (t.assignedPrice ?? 0), 0) ?? 0;
+  const workflowComplete = workflow?.status === "completed" || workflow?.status === "failed";
+
+  const agents = useQuery(api.agents.getAllAgents, {});
+  const resultsTasks =
+    workflow?.tasks?.map((t) => ({
+      logicalId: t.logicalId,
+      description: t.description,
+      assignedAgentId: t.assignedAgentId as string | undefined,
+      assignedAgentName: agents?.find((a) => a._id === t.assignedAgentId)?.name,
+      result: t.result,
+      assignedPrice: t.assignedPrice,
+    })) ?? [];
 
   const handleExecute = async (input: string) => {
     const res = await fetch("/api/workflow", {
@@ -132,6 +164,23 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex flex-shrink-0 flex-wrap items-center gap-2">
+            {workflowId && (
+              <div className="flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-gray-800/80 px-4 py-2">
+                <motion.span
+                  key={runningCost}
+                  initial={{ opacity: 0.7, scale: 1.05 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-sm font-medium tabular-nums text-emerald-400"
+                >
+                  ${runningCost.toFixed(2)}
+                </motion.span>
+                {workflowComplete ? (
+                  <span className="text-xs text-gray-500">— workflow complete</span>
+                ) : (
+                  <span className="text-xs text-gray-500">live cost</span>
+                )}
+              </div>
+            )}
             {isRunning && (
               <span className="flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1.5 text-xs font-medium text-amber-400">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" />
@@ -195,7 +244,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="min-h-0 flex-1 overflow-auto p-6 pt-4">
-              <CommandInput onExecute={handleExecute} disabled={isOrchestrating} />
+              <CommandInput onExecute={handleExecute} disabled={isOrchestrating} showRunAnother={showResults} />
               {isOrchestrating && (
                 <p className="mt-3 text-sm text-amber-400">Collecting bids and building plan…</p>
               )}
@@ -217,8 +266,12 @@ export default function DashboardPage() {
                     taskCount={workflowMeta.taskCount}
                     completedAt={workflow?.completedAt ?? workflowMeta.completedAt}
                     createdAt={workflowMeta.createdAt}
+                    totalEstimatedCost={workflow?.totalEstimatedCost}
+                    totalEstimatedTime={workflow?.totalEstimatedTime}
                     synthesizedResult={workflow?.synthesizedResult}
                     laminarTraceId={workflow?.laminarTraceId}
+                    workflowArchived={workflow?.workflowArchived}
+                    tasks={resultsTasks}
                     onClose={() => setShowResults(false)}
                   />
                 </div>

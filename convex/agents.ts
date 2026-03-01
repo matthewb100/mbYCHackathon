@@ -45,7 +45,7 @@ export const updateAgentReputationFromTask = mutation({
     if (!agent) return;
     const oldRep = agent.reputationScore as number;
     const newRep = Math.min(100, Math.max(0, oldRep * 0.8 + Math.min(100, Math.max(0, taskScore)) * 0.2));
-    await ctx.db.patch(agentId, { reputationScore: newRep });
+    await ctx.db.patch(agentId, { reputationScorePrev: oldRep, reputationScore: newRep });
   },
 });
 
@@ -59,12 +59,29 @@ export const updateAgentLoad = mutation({
   },
 });
 
+export const setAgentLastLearnedDomain = mutation({
+  args: { agentId: v.id("agents"), domain: v.string() },
+  handler: async (ctx, { agentId, domain }) => {
+    await ctx.db.patch(agentId, { lastLearnedDomain: domain });
+  },
+});
+
 export const getOnlineAgents = query({
   handler: async (ctx) => {
     return await ctx.db
       .query("agents")
       .withIndex("by_online", (q) => q.eq("isOnline", true))
       .collect();
+  },
+});
+
+export const removeAgent = mutation({
+  args: { agentId: v.id("agents") },
+  handler: async (ctx, { agentId }) => {
+    const agent = await ctx.db.get(agentId);
+    if (!agent) return { ok: false, error: "Agent not found" };
+    await ctx.db.delete(agentId);
+    return { ok: true };
   },
 });
 

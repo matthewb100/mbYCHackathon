@@ -23,8 +23,9 @@ export const updateWorkflowStatus = mutation({
     totalEstimatedTime: v.optional(v.string()),
     synthesizedResult: v.optional(v.string()),
     laminarTraceId: v.optional(v.string()),
+    workflowArchived: v.optional(v.boolean()),
   },
-  handler: async (ctx, { workflowId, status, completedAt, executionPlanJson, totalEstimatedCost, totalEstimatedTime, synthesizedResult, laminarTraceId }) => {
+  handler: async (ctx, { workflowId, status, completedAt, executionPlanJson, totalEstimatedCost, totalEstimatedTime, synthesizedResult, laminarTraceId, workflowArchived }) => {
     const patch: Record<string, unknown> = { status };
     if (completedAt !== undefined) patch.completedAt = completedAt;
     if (executionPlanJson !== undefined) patch.executionPlanJson = executionPlanJson;
@@ -32,6 +33,7 @@ export const updateWorkflowStatus = mutation({
     if (totalEstimatedTime !== undefined) patch.totalEstimatedTime = totalEstimatedTime;
     if (synthesizedResult !== undefined) patch.synthesizedResult = synthesizedResult;
     if (laminarTraceId !== undefined) patch.laminarTraceId = laminarTraceId;
+    if (workflowArchived !== undefined) patch.workflowArchived = workflowArchived;
     await ctx.db.patch(workflowId, patch);
   },
 });

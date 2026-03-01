@@ -84,11 +84,14 @@ export class AgentCoordinator {
     return list;
   }
 
-  private async requestBids(task: ConvexTask, agents: ConvexAgent[]): Promise<(Bid & { agentId: string })[]> {
+  private async requestBids(task: ConvexTask, agents: ConvexAgent[], excludeAgentIds?: Set<string>): Promise<(Bid & { agentId: string })[]> {
     const requiredCaps = task.requiredCapabilities ?? [];
-    const capable = agents.filter((a) =>
+    let capable = agents.filter((a) =>
       requiredCaps.length === 0 || requiredCaps.some((c) => a.capabilities.includes(c))
     );
+    if (excludeAgentIds?.size) {
+      capable = capable.filter((a) => !excludeAgentIds.has(a._id as string));
+    }
     const bids: (Bid & { agentId: string })[] = [];
     for (const agent of capable) {
       const browserAgent = this.agents.get(agent._id);
@@ -276,6 +279,7 @@ export class AgentCoordinator {
 
     const { result: final, traceId } = await runWithWorkflowTrace(workflowId as string, async () => {
       const completedLogicalIds = new Set<string>();
+      const rebidAttempted = new Set<string>();
       const contextByLogicalId: Record<string, { success: boolean; data: unknown }> = {};
       const evaluator = new AgentEvaluator();
       const executionStore = new ExecutionStore();
@@ -371,6 +375,54 @@ export class AgentCoordinator {
       }
 
       contextByLogicalId[task.logicalId] = { success: result.success, data: result.data };
+
+      if (!result.success && !rebidAttempted.has(task.logicalId)) {
+        await runMutation(api.tasks.updateTaskStatus, { taskId: task._id, status: "bidding" });
+        await runMutation(api.agents.updateAgentLoad, { agentId, delta: -1 });
+        await runMutation(api.executionLogs.addLog, {
+          taskId: task._id,
+          agentId,
+          action: "rebidding",
+          details: `Task failed — excluding ${agent.name}, requesting new bids from other agents`,
+        });
+        const freshAgents = (await runQuery(api.agents.getOnlineAgents, {})) as ConvexAgent[];
+        const rebidBids = await this.requestBids(task, freshAgents, new Set([agentId as string]));
+        if (rebidBids.length > 0) {
+          for (const b of rebidBids) {
+            await runMutation(api.bids.submitBid, {
+              agentId: b.agentId as Id<"agents">,
+              taskId: task._id,
+              confidenceScore: b.confidenceScore,
+              estimatedTimeMs: b.estimatedTimeMs,
+              price: b.price,
+              reasoning: b.reasoning,
+            });
+          }
+          const bidList = (await runQuery(api.bids.getBidsForTask, { taskId: task._id })) as Array<{ _id: Id<"bids">; agentId: Id<"agents">; confidenceScore: number; status: string }>;
+          const pendingBids = bidList.filter((b) => b.status === "pending");
+          const agentMap = new Map(freshAgents.map((a) => [a._id as string, a]));
+          const winner =
+            pendingBids.length > 0
+              ? pendingBids.reduce((a, b) => {
+                  const scoreA = a.confidenceScore * ((agentMap.get(a.agentId as string)?.reputationScore ?? 50) / 100);
+                  const scoreB = b.confidenceScore * ((agentMap.get(b.agentId as string)?.reputationScore ?? 50) / 100);
+                  return scoreB > scoreA ? b : a;
+                })
+              : null;
+          if (winner) {
+            await runMutation(api.bids.acceptBid, { bidId: winner._id });
+            rebidAttempted.add(task.logicalId);
+            const updatedTasks = (await runQuery(api.tasks.getTasksByWorkflow, { workflowId })) as ConvexTask[];
+            const updatedTask = updatedTasks.find((t) => t._id === task._id);
+            if (updatedTask?.assignedAgentId) {
+              await runOneTask(updatedTask);
+              return;
+            }
+          }
+        }
+        rebidAttempted.add(task.logicalId);
+      }
+
       completedLogicalIds.add(task.logicalId);
 
       await runMutation(api.executionLogs.addLog, {
@@ -424,6 +476,7 @@ export class AgentCoordinator {
           domain,
           content: `Agent completed task successfully on ${domain}: ${task.description}. Outcome: ${JSON.stringify(result.data).slice(0, 500)}`,
         }).catch(() => {});
+        await runMutation(api.agents.setAgentLastLearnedDomain, { agentId, domain });
       }
 
       const stillExecuting = approvedTasks.filter((t) => !completedLogicalIds.has(t.logicalId)).length;
@@ -463,7 +516,7 @@ export class AgentCoordinator {
       }));
       synthesizedResult = await synthesizeResults({ userInput: workflow.input, taskResults: resultsForSynthesis });
     }
-    executionStore
+    const archivePromise = executionStore
       .archiveWorkflow({
         workflowId: workflowId as string,
         input: workflow.input,
@@ -479,8 +532,10 @@ export class AgentCoordinator {
           executionTimeMs: (t.result as TaskResult)?.executionTimeMs,
         })),
       })
-      .catch(() => {});
-    return { allDone, synthesizedResult };
+      .then(() => true)
+      .catch(() => false);
+    const archived = await archivePromise;
+    return { allDone, synthesizedResult, archived };
     });
 
     await runMutation(api.workflows.updateWorkflowStatus, {
@@ -489,6 +544,7 @@ export class AgentCoordinator {
       completedAt: final.allDone ? Date.now() : undefined,
       synthesizedResult: final.synthesizedResult || undefined,
       laminarTraceId: traceId != null ? String(traceId) : undefined,
+      workflowArchived: final.archived ?? false,
     });
   }
 }

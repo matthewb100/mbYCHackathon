@@ -77,9 +77,9 @@ export function TaskBoard({ workflowId }: TaskBoardProps) {
           </span>
         )}
       </div>
-      <div className="grid flex-1 grid-cols-3 gap-2 overflow-auto lg:grid-cols-4 xl:grid-cols-7">
+      <div className="grid w-full min-w-0 flex-1 grid-cols-4 gap-2 overflow-auto sm:grid-cols-6 lg:grid-cols-7">
         {COLS.map((status) => (
-          <div key={status} className="flex min-w-[140px] flex-col rounded-lg bg-gray-800/50 p-2">
+          <div key={status} className="flex min-w-0 flex-col rounded-lg bg-gray-800/50 p-2">
             <div className={`mb-2 rounded px-2 py-0.5 text-xs font-medium ${COL_COLORS[status]} text-white`}>
               {COL_LABELS[status]}
             </div>

@@ -1,8 +1,11 @@
 "use client";
 
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import type { Id } from "@/convex/_generated/dataModel";
 import { motion } from "framer-motion";
+import { Trash2 } from "lucide-react";
+import { useState } from "react";
 
 export function AgentPanel() {
   const agents = useQuery(api.agents.getAllAgents, {}) as Array<{
@@ -10,6 +13,7 @@ export function AgentPanel() {
     name: string;
     capabilities: string[];
     reputationScore: number;
+    reputationScorePrev?: number;
     currentLoad: number;
     maxConcurrency: number;
     isOnline: boolean;
@@ -17,7 +21,21 @@ export function AgentPanel() {
     isExternal?: boolean;
     tasksCompleted?: number;
     earnings?: number;
+    lastLearnedDomain?: string;
   }> | undefined;
+
+  const removeAgent = useMutation(api.agents.removeAgent);
+  const [removingId, setRemovingId] = useState<Id<"agents"> | null>(null);
+
+  const handleRemove = async (agentId: Id<"agents">, agentName: string) => {
+    if (!confirm(`Remove "${agentName}" from the marketplace? They will no longer receive tasks.`)) return;
+    setRemovingId(agentId);
+    try {
+      await removeAgent({ agentId });
+    } finally {
+      setRemovingId(null);
+    }
+  };
 
   if (!agents?.length) {
     return (
@@ -78,21 +96,44 @@ export function AgentPanel() {
                   </span>
                 ))}
               </div>
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <div className="h-1.5 flex-1 max-w-[80px] overflow-hidden rounded-full bg-gray-700">
                   <motion.div
                     className="h-full rounded-full bg-emerald-500"
-                    initial={{ width: 0 }}
+                    initial={false}
                     animate={{ width: `${agent.reputationScore}%` }}
                     transition={{ duration: 0.5 }}
                   />
                 </div>
-                <span className="text-xs text-gray-500">{agent.reputationScore}</span>
+                <span className="text-xs text-gray-500">
+                  {agent.reputationScorePrev != null && agent.reputationScorePrev !== agent.reputationScore ? (
+                    <span className="text-gray-400">
+                      <span className={agent.reputationScore > agent.reputationScorePrev ? "text-emerald-400" : "text-amber-400/90"}>
+                        {agent.reputationScorePrev} → {agent.reputationScore}
+                      </span>
+                    </span>
+                  ) : (
+                    agent.reputationScore
+                  )}
+                </span>
                 <span className="text-xs text-gray-500">
                   {agent.currentLoad}/{agent.maxConcurrency}
                 </span>
               </div>
+              {agent.lastLearnedDomain && (
+                <p className="mt-1 text-[10px] text-sky-400/90">Learned: {agent.lastLearnedDomain}</p>
+              )}
             </div>
+            <button
+              type="button"
+              onClick={() => handleRemove(agent._id as Id<"agents">, agent.name)}
+              disabled={removingId === agent._id}
+              title="Remove from marketplace"
+              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-gray-500 transition hover:bg-red-500/20 hover:text-red-400 disabled:opacity-50"
+              aria-label={`Remove ${agent.name}`}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
           </motion.div>
         ))}
       </div>

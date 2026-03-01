@@ -12,6 +12,7 @@ export default defineSchema({
     totalEstimatedTime: v.optional(v.string()),
     synthesizedResult: v.optional(v.string()),
     laminarTraceId: v.optional(v.string()),
+    workflowArchived: v.optional(v.boolean()),
   }).index("by_created", ["createdAt"]),
 
   tasks: defineTable({
@@ -20,7 +21,7 @@ export default defineSchema({
     description: v.string(),
     targetUrl: v.optional(v.string()),
     dependencies: v.array(v.string()),
-    status: v.string(), // 'pending' | 'bidding' | 'planned' | 'assigned' | 'approved' | 'executing' | 'completed' | 'failed'
+    status: v.string(), // 'pending' | 'bidding' | 'assigned' | 'approved' | 'executing' | 'completed' | 'failed'
     assignedAgentId: v.optional(v.id("agents")),
     assignedPrice: v.optional(v.number()), // price paid to agent when task completes (from winning bid)
     priority: v.number(),
@@ -43,6 +44,7 @@ export default defineSchema({
     capabilities: v.array(v.string()),
     specializedDomains: v.array(v.string()),
     reputationScore: v.number(),
+    reputationScorePrev: v.optional(v.number()),
     currentLoad: v.number(),
     maxConcurrency: v.number(),
     isOnline: v.boolean(),
@@ -51,6 +53,7 @@ export default defineSchema({
     apiEndpoint: v.optional(v.string()),
     tasksCompleted: v.optional(v.number()), // lifetime tasks completed (for earnings)
     earnings: v.optional(v.number()), // lifetime $ earned
+    lastLearnedDomain: v.optional(v.string()), // Supermemory: domain learned after last successful task
   }).index("by_online", ["isOnline"]),
 
   bids: defineTable({

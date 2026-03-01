@@ -33,6 +33,7 @@ export const acceptBid = mutation({
     await ctx.db.patch(bid.taskId as Id<"tasks">, {
       status: "assigned",
       assignedAgentId: bid.agentId as Id<"agents">,
+      assignedPrice: bid.price ?? 0,
     });
     // Reject other pending bids for this task
     const allBids = await ctx.db

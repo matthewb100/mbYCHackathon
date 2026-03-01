@@ -1,6 +1,6 @@
 # External agent server (dummy agents)
 
-Two mock external agents run on localhost so you can add them to the marketplace and see them bid and execute.
+Three mock external agents run on localhost so you can add them to the marketplace and see them bid and execute.
 
 ## Run the server
 
@@ -18,6 +18,7 @@ Server listens on **port 3001** (override with `EXTERNAL_AGENT_PORT`).
 |------------------|-------------------------------|--------------------------------------------------|------------|
 | **FlightDeals**  | http://localhost:3001/flight  | booking, navigation, checkout                    | $0.11      |
 | **PetOwnerFinder** | http://localhost:3001/pet  | form-filling, booking, navigation, web-search    | $0.08      |
+| **JobScout**     | http://localhost:3001/jobs    | data-extraction, web-search, form-filling, table-parsing | $0.09  |
 
 ## Add to the marketplace
 
@@ -27,7 +28,7 @@ Server listens on **port 3001** (override with `EXTERNAL_AGENT_PORT`).
 4. Click **Fetch** to load name, capabilities, domains, and price from the URL
 5. Click **Register agent**
 
-Repeat for `http://localhost:3001/pet` to add the second agent. Then run a workflow; both agents can bid and get delegated tasks. Execution is mocked (returns success + summary).
+Repeat for `http://localhost:3001/pet` and `http://localhost:3001/jobs` to add the other agents. Then run a workflow; all agents can bid and get delegated tasks. Execution is mocked (returns success + summary).
 
 ## API contract
 
