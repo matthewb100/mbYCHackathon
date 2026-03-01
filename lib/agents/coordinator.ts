@@ -471,12 +471,14 @@ export class AgentCoordinator {
       executionStore.updateAgentProfile(agentId, result, domain, taskScore).catch(() => {});
 
       if (result.success) {
-        storeTaskMemory({
-          agentId,
-          domain,
-          content: `Agent completed task successfully on ${domain}: ${task.description}. Outcome: ${JSON.stringify(result.data).slice(0, 500)}`,
-        }).catch(() => {});
-        await runMutation(api.agents.setAgentLastLearnedDomain, { agentId, domain });
+        if (domain !== "unknown") {
+          storeTaskMemory({
+            agentId,
+            domain,
+            content: `Agent completed task successfully on ${domain}: ${task.description}. Outcome: ${JSON.stringify(result.data).slice(0, 500)}`,
+          }).catch(() => {});
+          await runMutation(api.agents.setAgentLastLearnedDomain, { agentId, domain });
+        }
       }
 
       const stillExecuting = approvedTasks.filter((t) => !completedLogicalIds.has(t.logicalId)).length;

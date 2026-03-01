@@ -70,7 +70,7 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
         setDomainsInput(data.specializedDomains.join(", "));
       if (typeof data.pricePerTask === "number" && data.pricePerTask >= 0)
         setPricePerTask(String(data.pricePerTask.toFixed(2)));
-    } catch (e) {
+    } catch {
       setError("Could not fetch from URL. Is the external agent server running? (e.g. npm run external-agents)");
     } finally {
       setFetching(false);

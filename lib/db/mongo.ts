@@ -93,7 +93,7 @@ export class ExecutionStore {
         createdAt: r.createdAt,
         synthesizedResult: r.synthesizedResult,
         tasks: r.tasks ?? [],
-      } as WorkflowArchiveRecord & { _id?: string });
+      } as WorkflowSummary & { _id?: string });
     } catch {
       // non-blocking
     }

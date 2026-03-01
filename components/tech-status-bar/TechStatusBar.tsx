@@ -4,7 +4,18 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { motion } from "framer-motion";
 
-const TECH_ITEMS: Array<{ key: keyof typeof DEFAULT; label: string; unit?: string }> = [
+type TechStats = {
+  claudeCalls: number;
+  browserLive: number;
+  convexMutations: number;
+  hudAvg: number;
+  supermemoryDomains: number;
+  laminarSpans: number;
+  mongoRecords: number;
+  vercelStatus: string;
+};
+
+const TECH_ITEMS: Array<{ key: keyof TechStats; label: string; unit?: string }> = [
   { key: "claudeCalls", label: "Claude", unit: "calls" },
   { key: "browserLive", label: "Browser Use", unit: "live" },
   { key: "convexMutations", label: "Convex", unit: "mutations" },
@@ -15,18 +26,7 @@ const TECH_ITEMS: Array<{ key: keyof typeof DEFAULT; label: string; unit?: strin
   { key: "vercelStatus", label: "Vercel", unit: "" },
 ];
 
-const DEFAULT = {
-  claudeCalls: 0,
-  browserLive: 0,
-  convexMutations: 0,
-  hudAvg: 0,
-  supermemoryDomains: 0,
-  laminarSpans: 0,
-  mongoRecords: 0,
-  vercelStatus: "—",
-};
-
-const PLACEHOLDER = {
+const PLACEHOLDER: TechStats = {
   claudeCalls: 3,
   browserLive: 0,
   convexMutations: 24,
@@ -38,7 +38,7 @@ const PLACEHOLDER = {
 };
 
 export function TechStatusBar() {
-  const stats = useQuery(api.executionStats.getExecutionStats) as typeof DEFAULT & { updatedAt?: number } | undefined;
+  const stats = useQuery(api.executionStats.getExecutionStats) as TechStats & { updatedAt?: number } | undefined;
   const s = stats && (stats.updatedAt ?? 0) > 0 ? stats : PLACEHOLDER;
 
   return (

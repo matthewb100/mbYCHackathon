@@ -120,7 +120,7 @@ export function AgentPanel() {
                   {agent.currentLoad}/{agent.maxConcurrency}
                 </span>
               </div>
-              {agent.lastLearnedDomain && (
+              {agent.lastLearnedDomain && agent.lastLearnedDomain !== "unknown" && (
                 <p className="mt-1 text-[10px] text-sky-400/90">Learned: {agent.lastLearnedDomain}</p>
               )}
             </div>
