@@ -60,18 +60,27 @@ export function RegisterAgentModal({ open, onClose }: RegisterAgentModalProps) {
     setError(null);
     setFetching(true);
     try {
-      const res = await fetch(endpoint, { method: "GET" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = (await res.json()) as Manifest;
-      if (data.name) setName(data.name);
-      if (Array.isArray(data.capabilities) && data.capabilities.length > 0)
-        setCapabilitiesInput(data.capabilities.join(", "));
-      if (Array.isArray(data.specializedDomains) && data.specializedDomains.length > 0)
-        setDomainsInput(data.specializedDomains.join(", "));
-      if (typeof data.pricePerTask === "number" && data.pricePerTask >= 0)
-        setPricePerTask(String(data.pricePerTask.toFixed(2)));
-    } catch {
-      setError("Could not fetch from URL. Is the external agent server running? (e.g. npm run external-agents)");
+      const res = await fetch("/api/fetch-agent-manifest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: endpoint }),
+      });
+      const data = (await res.json()) as Manifest | { error?: string };
+      if (!res.ok) {
+        throw new Error(typeof data === "object" && data && "error" in data ? data.error : `HTTP ${res.status}`);
+      }
+      const manifest = data as Manifest;
+      if (manifest.name) setName(manifest.name);
+      if (Array.isArray(manifest.capabilities) && manifest.capabilities.length > 0)
+        setCapabilitiesInput(manifest.capabilities.join(", "));
+      if (Array.isArray(manifest.specializedDomains) && manifest.specializedDomains.length > 0)
+        setDomainsInput(manifest.specializedDomains.join(", "));
+      if (typeof manifest.pricePerTask === "number" && manifest.pricePerTask >= 0)
+        setPricePerTask(String(manifest.pricePerTask.toFixed(2)));
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Could not fetch from URL. Is the external agent server running? (e.g. npm run external-agents)"
+      );
     } finally {
       setFetching(false);
     }
